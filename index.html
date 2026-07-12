@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeKYC - 2 Column Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center p-4">
+    
+    <!-- 2 Column Grid Container -->
+    <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Column 1: API Key & Generate -->
+        <div class="bg-white p-8 rounded-xl shadow-md flex flex-col justify-between min-h-[350px]">
+            
+            <!-- Key Management Section -->
+            <div>
+                <h2 class="text-lg font-bold text-gray-700 mb-4 uppercase tracking-wider">1. API Key Management</h2>
+                
+                <input type="password" id="apiKeyInput" 
+                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 mb-3 transition-all" 
+                    placeholder="Paste API Key here...">
+                
+                <div class="flex space-x-3">
+                    <button id="saveKeyBtn" class="flex-1 py-2 px-4 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg transition-colors text-sm">
+                        Save API Key
+                    </button>
+                    
+                    <button id="changeKeyBtn" class="hidden flex-1 py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-lg transition-colors text-sm">
+                        Change Key
+                    </button>
+                    
+                    <button id="resetKeyBtn" class="hidden py-2 px-4 bg-red-100 hover:bg-red-200 text-red-600 font-bold rounded-lg transition-colors text-sm">
+                        Reset
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Generate Link Section -->
+            <div class="mt-6 pt-6 border-t border-gray-100">
+                <h2 class="text-lg font-bold text-gray-700 mb-4 uppercase tracking-wider">2. Generate</h2>
+                <button id="generateBtn" class="w-full py-4 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors flex justify-center items-center text-lg shadow-sm">
+                    <svg id="spinner" class="animate-spin -ml-1 mr-3 h-6 w-6 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span id="btnText">Generate Link</span>
+                </button>
+                <p id="errorText" class="text-red-500 text-sm mt-3 text-center hidden"></p>
+            </div>
+        </div>
+
+        <!-- Column 2: Get Link Option -->
+        <div class="bg-white p-8 rounded-xl shadow-md flex flex-col justify-center min-h-[350px]">
+            <h2 class="text-lg font-bold text-gray-700 mb-4 uppercase tracking-wider">3. Result</h2>
+            
+            <input type="text" id="linkOutput" readonly
+                class="w-full px-4 py-4 bg-gray-50 border border-gray-200 text-gray-500 rounded-lg focus:outline-none mb-6 cursor-not-allowed text-center" 
+                placeholder="Generated link will appear here...">
+                
+            <button id="openBtn" disabled class="w-full py-4 px-4 bg-gray-300 text-gray-500 font-bold rounded-lg transition-colors cursor-not-allowed text-lg">
+                Open KYC Link →
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // UI Elements
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const saveKeyBtn = document.getElementById('saveKeyBtn');
+        const changeKeyBtn = document.getElementById('changeKeyBtn');
+        const resetKeyBtn = document.getElementById('resetKeyBtn');
+        
+        const generateBtn = document.getElementById('generateBtn');
+        const errorText = document.getElementById('errorText');
+        
+        const linkOutput = document.getElementById('linkOutput');
+        const openBtn = document.getElementById('openBtn');
+
+        // State Management
+        let currentKey = localStorage.getItem('wekyc_api_key') || '';
+
+        function updateUI() {
+            if (currentKey) {
+                // Key is saved
+                apiKeyInput.type = 'password';
+                apiKeyInput.value = '••••••••••••••••••••••••••••••••';
+                apiKeyInput.disabled = true;
+                apiKeyInput.classList.add('bg-slate-100', 'text-slate-500');
+                
+                saveKeyBtn.classList.add('hidden');
+                changeKeyBtn.classList.remove('hidden');
+                resetKeyBtn.classList.remove('hidden');
+                
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+                generateBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            } else {
+                // No key saved
+                apiKeyInput.type = 'text';
+                apiKeyInput.value = '';
+                apiKeyInput.disabled = false;
+                apiKeyInput.classList.remove('bg-slate-100', 'text-slate-500');
+                
+                saveKeyBtn.classList.remove('hidden');
+                changeKeyBtn.classList.add('hidden');
+                resetKeyBtn.classList.add('hidden');
+                
+                generateBtn.disabled = true;
+                generateBtn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+                generateBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            }
+        }
+
+        // Initialize UI on load
+        updateUI();
+
+        // Save Key Action
+        saveKeyBtn.addEventListener('click', () => {
+            const val = apiKeyInput.value.trim();
+            if (val) {
+                currentKey = val;
+                localStorage.setItem('wekyc_api_key', currentKey);
+                updateUI();
+                errorText.classList.add('hidden');
+            }
+        });
+
+        // Change Key Action
+        changeKeyBtn.addEventListener('click', () => {
+            apiKeyInput.type = 'text';
+            apiKeyInput.value = currentKey;
+            apiKeyInput.disabled = false;
+            apiKeyInput.classList.remove('bg-slate-100', 'text-slate-500');
+            apiKeyInput.focus();
+            
+            saveKeyBtn.classList.remove('hidden');
+            changeKeyBtn.classList.add('hidden');
+            saveKeyBtn.textContent = "Update Key";
+        });
+
+        // Reset Key Action
+        resetKeyBtn.addEventListener('click', () => {
+            currentKey = '';
+            localStorage.removeItem('wekyc_api_key');
+            updateUI();
+            saveKeyBtn.textContent = "Save API Key";
+        });
+
+        // Generate Link Action
+        generateBtn.addEventListener('click', async () => {
+            if (!currentKey) return;
+
+            // Generate Random TXN ID
+            const randomTxnId = 'txn_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            const payload = {
+                api_key: currentKey,
+                client_txn_id: randomTxnId,
+                name: "Test User",
+                udf1: "", udf2: "", udf3: ""
+            };
+
+            // UI Loading state
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+
+            errorText.classList.add('hidden');
+            generateBtn.disabled = true;
+            generateBtn.classList.add('opacity-75');
+            spinner.classList.remove('hidden');
+            btnText.textContent = "Generating...";
+            
+            // Reset right column
+            linkOutput.value = "";
+            openBtn.disabled = true;
+            openBtn.className = "w-full py-4 px-4 bg-gray-300 text-gray-500 font-bold rounded-lg transition-colors cursor-not-allowed text-lg";
+
+            try {
+                const response = await fetch('/api/proxy/create_kyc_link', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.status !== "error") {
+                    const link = data.link || data.url || data.kyc_link || data.redirect_url;
+                    if (link) {
+                        // Success - Update Right Column
+                        linkOutput.value = link;
+                        linkOutput.classList.remove('text-gray-500', 'cursor-not-allowed');
+                        linkOutput.classList.add('text-green-700', 'font-medium');
+                        
+                        openBtn.disabled = false;
+                        openBtn.className = "w-full py-4 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors shadow-lg text-lg";
+                        openBtn.onclick = () => window.open(link, '_blank');
+                    } else {
+                        errorText.textContent = "No link returned in the response.";
+                        errorText.classList.remove('hidden');
+                    }
+                } else {
+                    errorText.textContent = data.error || data.msg || 'Failed to generate link';
+                    errorText.classList.remove('hidden');
+                }
+            } catch(err) {
+                errorText.textContent = "Network Error: Could not reach the API.";
+                errorText.classList.remove('hidden');
+            } finally {
+                // Restore button state
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-75');
+                spinner.classList.add('hidden');
+                btnText.textContent = "Generate Link";
+            }
+        });
+    </script>
+</body>
+</html>
