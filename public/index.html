@@ -8,15 +8,13 @@
 </head>
 <body class="bg-gray-100 h-screen flex items-center justify-center p-4">
     
-    <!-- 2 Column Grid Container -->
-    <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- 3 Column Grid Container -->
+    <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Column 1: API Key & Generate -->
-        <div class="bg-white p-8 rounded-xl shadow-md flex flex-col justify-between min-h-[350px]">
-            
-            <!-- Key Management Section -->
+        <!-- Column 1: API Key -->
+        <div class="bg-white p-8 rounded-xl shadow-md flex flex-col justify-center">
             <div>
-                <h2 class="text-lg font-bold text-gray-700 mb-4 uppercase tracking-wider">1. API Key Management</h2>
+                <h2 class="text-lg font-bold text-gray-700 mb-4 uppercase tracking-wider text-center">API Key Management</h2>
                 
                 <input type="password" id="apiKeyInput" 
                     class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 mb-3 transition-all" 
@@ -36,24 +34,11 @@
                     </button>
                 </div>
             </div>
-            
-            <!-- Generate Link Section -->
-            <div class="mt-6 pt-6 border-t border-gray-100">
-                <h2 class="text-lg font-bold text-gray-700 mb-4 uppercase tracking-wider">2. Generate</h2>
-                <button id="generateBtn" class="w-full py-4 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors flex justify-center items-center text-lg shadow-sm">
-                    <svg id="spinner" class="animate-spin -ml-1 mr-3 h-6 w-6 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span id="btnText">Generate Link</span>
-                </button>
-                <p id="errorText" class="text-red-500 text-sm mt-3 text-center hidden"></p>
-            </div>
         </div>
 
-        <!-- Column 2: Get Link Option -->
-        <div class="bg-white p-8 rounded-xl shadow-md flex flex-col justify-center min-h-[350px]">
-            <h2 class="text-lg font-bold text-gray-700 mb-4 uppercase tracking-wider">3. Result</h2>
+        <!-- Column 2: Result (Middle) -->
+        <div class="bg-white p-8 rounded-xl shadow-md flex flex-col justify-center border-2 border-blue-50 relative">
+            <h2 class="text-lg font-bold text-gray-700 mb-4 uppercase tracking-wider text-center">Result</h2>
             
             <input type="text" id="linkOutput" readonly
                 class="w-full px-4 py-4 bg-gray-50 border border-gray-200 text-gray-500 rounded-lg focus:outline-none mb-6 cursor-not-allowed text-center" 
@@ -63,7 +48,31 @@
                 Open KYC Link →
             </button>
         </div>
-
+        
+        <!-- Column 3: Generate Link -->
+        <div class="bg-white p-8 rounded-xl shadow-md flex flex-col justify-center">
+            <div>
+                <h2 class="text-lg font-bold text-gray-700 mb-4 uppercase tracking-wider text-center">Generate</h2>
+                <button id="generateBtn" class="w-full py-4 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors flex justify-center items-center text-lg shadow-sm">
+                    <svg id="spinner" class="animate-spin -ml-1 mr-3 h-6 w-6 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span id="btnText">Generate Link</span>
+                </button>
+                <p id="errorText" class="text-red-500 text-sm mt-3 text-center hidden"></p>
+                <div class="flex space-x-3 mt-4">
+                    <button id="copyBtn" disabled class="flex-1 py-3 px-4 bg-gray-200 text-gray-500 font-bold rounded-lg transition-colors cursor-not-allowed text-sm flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy
+                    </button>
+                    <button id="shareBtn" disabled class="flex-1 py-3 px-4 bg-gray-200 text-gray-500 font-bold rounded-lg transition-colors cursor-not-allowed text-sm flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                        Share
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -78,6 +87,8 @@
         
         const linkOutput = document.getElementById('linkOutput');
         const openBtn = document.getElementById('openBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const shareBtn = document.getElementById('shareBtn');
 
         // State Management
         let currentKey = localStorage.getItem('wekyc_api_key') || '';
@@ -177,6 +188,11 @@
             openBtn.disabled = true;
             openBtn.className = "w-full py-4 px-4 bg-gray-300 text-gray-500 font-bold rounded-lg transition-colors cursor-not-allowed text-lg";
 
+            copyBtn.disabled = true;
+            copyBtn.className = "flex-1 py-3 px-4 bg-gray-200 text-gray-500 font-bold rounded-lg transition-colors cursor-not-allowed text-sm flex items-center justify-center";
+            shareBtn.disabled = true;
+            shareBtn.className = "flex-1 py-3 px-4 bg-gray-200 text-gray-500 font-bold rounded-lg transition-colors cursor-not-allowed text-sm flex items-center justify-center";
+
             try {
                 const response = await fetch('/api/proxy/create_kyc_link', {
                     method: 'POST',
@@ -197,6 +213,11 @@
                         openBtn.disabled = false;
                         openBtn.className = "w-full py-4 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors shadow-lg text-lg";
                         openBtn.onclick = () => window.open(link, '_blank');
+                        
+                        copyBtn.disabled = false;
+                        copyBtn.className = "flex-1 py-3 px-4 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-lg transition-colors text-sm flex items-center justify-center shadow-md";
+                        shareBtn.disabled = false;
+                        shareBtn.className = "flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors text-sm flex items-center justify-center shadow-md";
                     } else {
                         errorText.textContent = "No link returned in the response.";
                         errorText.classList.remove('hidden');
@@ -214,6 +235,47 @@
                 generateBtn.classList.remove('opacity-75');
                 spinner.classList.add('hidden');
                 btnText.textContent = "Generate Link";
+            }
+        });
+
+        // Copy Action
+        copyBtn.addEventListener('click', async () => {
+            if (linkOutput.value) {
+                try {
+                    await navigator.clipboard.writeText(linkOutput.value);
+                    const originalHTML = copyBtn.innerHTML;
+                    copyBtn.innerHTML = `<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied!`;
+                    copyBtn.classList.replace('bg-gray-800', 'bg-green-600');
+                    copyBtn.classList.replace('hover:bg-gray-900', 'hover:bg-green-700');
+                    setTimeout(() => { 
+                        copyBtn.innerHTML = originalHTML; 
+                        copyBtn.classList.replace('bg-green-600', 'bg-gray-800');
+                        copyBtn.classList.replace('hover:bg-green-700', 'hover:bg-gray-900');
+                    }, 2000);
+                } catch (err) {
+                    alert('Failed to copy text');
+                }
+            }
+        });
+
+        // Share Action
+        shareBtn.addEventListener('click', async () => {
+            if (linkOutput.value) {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'WeKYC Link',
+                            text: 'Please complete your KYC using this link:',
+                            url: linkOutput.value
+                        });
+                    } catch (err) {
+                        if (err.name !== 'AbortError') {
+                            console.error('Error sharing:', err);
+                        }
+                    }
+                } else {
+                    alert('Web Share API is not supported in your browser.');
+                }
             }
         });
     </script>
